@@ -32,7 +32,7 @@ export default function App() {
     console.log(user);
   };
 
-  if (!userLoading && !user?.setup) return <SetupAccount />;
+  if (!userLoading && user?.setup == false) return <SetupAccount />;
 
   return (
     <div className="">
