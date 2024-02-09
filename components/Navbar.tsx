@@ -59,9 +59,12 @@ export default function Navbar() {
           <GoogleButton onClick={signinWithGoogle} buttonText="Sign In" />
         )}
         {user && (
-          <li className="cursor-pointer" onClick={signout}>
-            Sign Out
-          </li>
+          <>
+            <Link href={`/my-profile`}>Profile</Link>
+            <li className="cursor-pointer" onClick={signout}>
+              Sign Out
+            </li>
+          </>
         )}
       </ul>
     </div>
