@@ -55,7 +55,9 @@ export default function Navbar() {
         <Link href={"/"}>DotlyDemo</Link>
       </h1>
       <ul className="flex gap-4">
-        {!user && <GoogleButton onClick={signinWithGoogle} />}
+        {!user && (
+          <GoogleButton onClick={signinWithGoogle} buttonText="Sign In" />
+        )}
         {user && (
           <li className="cursor-pointer" onClick={signout}>
             Sign Out
