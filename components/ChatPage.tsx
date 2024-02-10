@@ -100,11 +100,11 @@ export default function ChatPage() {
         ) : (
           <div className="lg:p-10 lg:px-32 p-4 flex-1 flex flex-col gap-4 overflow-y-auto">
             {messages &&
-              messages.map((message: any) => {
+              messages.map((message: any, i: any) => {
                 const messageFromUser = message.role === "user";
 
                 return (
-                  <div className="flex flex-col gap-1">
+                  <div className="flex flex-col gap-1" key={i}>
                     <span className="font-thin text-sm">
                       {messageFromUser ? "You" : "Dotly"}
                     </span>
