@@ -26,7 +26,11 @@ export default function App() {
 
   if (!userLoading && !user)
     return (
-      <div className="flex-1 flex flex-col items-center pt-36">
+      <div className="flex-1 flex flex-col gap-4 items-center pt-24">
+        <img
+          src="https://assets-global.website-files.com/6554e01bb9073d017c926a10/6556aac1a5d5337668a7438b_Dotly%20character.png"
+          className="lg:w-48 w-40"
+        />
         <h1 className="lg:text-4xl lg:font-bold text-center text-3xl font-semibold">
           Sign in to give Dotly a go!
         </h1>

@@ -94,8 +94,12 @@ export default function ChatPage() {
     return (
       <div className="flex-1 flex flex-col  overflow-hidden">
         {messages && messages.length === 0 ? (
-          <div className="flex-1 flex flex-col justify-center items-center">
-            <h1 className="text-xl font-medium">Ask away!</h1>
+          <div className="flex-1 flex flex-col gap-4 justify-center items-center">
+            <img
+              src="https://assets-global.website-files.com/6554e01bb9073d017c926a10/6556aac1a5d5337668a7438b_Dotly%20character.png"
+              className="lg:w-36 w-32"
+            />
+            <h1 className="text-2xl font-medium">Ask away!</h1>
           </div>
         ) : (
           <div className="lg:p-10 lg:px-32 p-4 flex-1 flex flex-col gap-4 overflow-y-auto">
