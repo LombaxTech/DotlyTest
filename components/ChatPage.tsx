@@ -2,7 +2,7 @@ import { AuthContext } from "@/context/AuthContext";
 import axios from "axios";
 import React, { useContext, useRef, useState } from "react";
 
-const url = `http://localhost:3000`;
+const url = process.env.NEXT_PUBLIC_FRONTEND_URL;
 
 const LotsOfMessages = () => (
   <>

@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import { openai } from "@/openai";
 import axios from "axios";
 
-const url = `http://localhost:3000`;
+const url = process.env.NEXT_PUBLIC_FRONTEND_URL;
 
 export default function Test() {
   const [generation, setGeneration] = useState<any>("");
