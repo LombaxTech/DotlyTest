@@ -67,11 +67,13 @@ export default function MyProfile() {
               placeholder="Tell us a bit about yourself"
             />
           </div>
-          {changesExist && (
-            <button className="btn btn-primary" onClick={saveChanges}>
-              Save Changes
-            </button>
-          )}
+          <button
+            disabled={!changesExist}
+            className="btn btn-primary"
+            onClick={saveChanges}
+          >
+            Save Changes
+          </button>
 
           {error && (
             <div className="bg-red-200 p-2 text-red-800 text-center">
