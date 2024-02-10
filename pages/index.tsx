@@ -6,6 +6,7 @@ import { AuthContext } from "@/context/AuthContext";
 import { signOut } from "firebase/auth";
 import { useRouter } from "next/router";
 import SetupAccount from "@/components/SetupAccount";
+import ChatPage from "@/components/ChatPage";
 
 export default function App() {
   const { user, userLoading } = useContext(AuthContext);
@@ -19,31 +20,25 @@ export default function App() {
     // if (!userLoading && !user) router.push("signup");
   }, [user, userLoading]);
 
-  const addStuff = async () => {
-    const docRef = await addDoc(collection(db, "users"), {
-      first: "Ada",
-      last: "Lovelace",
-      born: 1815,
-    });
-    console.log("Document written with ID: ", docRef.id);
-  };
-
-  const show = async () => {
-    console.log(user);
-  };
-
   if (!userLoading && user?.setup == false) return <SetupAccount />;
+
+  if (user) return <ChatPage />;
+
+  if (!userLoading && !user)
+    return (
+      <div className="flex-1 flex flex-col items-center pt-36">
+        <h1 className="text-4xl font-bold text-center">
+          Sign in to give Dotly a go!
+        </h1>
+      </div>
+    );
 
   return (
     <div className="">
-      {/* <button onClick={addStuff} className="btn btn-primary">
-        Click me!
-      </button> */}
       {user && (
         <div className="p-10">
           {user.email}
           {user.name}
-          <button onClick={show}>show</button>
         </div>
       )}
       {!user && <div>No user found</div>}
