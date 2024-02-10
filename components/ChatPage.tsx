@@ -98,7 +98,7 @@ export default function ChatPage() {
             <h1 className="text-xl font-medium">Ask away!</h1>
           </div>
         ) : (
-          <div className="p-10 px-32 flex-1 flex flex-col gap-4 overflow-y-auto">
+          <div className="lg:p-10 lg:px-32 p-4 flex-1 flex flex-col gap-4 overflow-y-auto">
             {messages &&
               messages.map((message: any) => {
                 const messageFromUser = message.role === "user";
@@ -121,10 +121,10 @@ export default function ChatPage() {
             <div className="" ref={newestMessageRef}></div>
           </div>
         )}
-        <div className="p-4 bg-white flex justify-center items-center">
+        <div className="p-4 lg:px-32 bg-white flex justify-center items-center">
           <input
             type="text"
-            className="p-2 border w-7/12"
+            className="p-2 border flex-1"
             placeholder="Enter your message"
             value={messageInput}
             onChange={(e) => setMessageInput(e.target.value)}

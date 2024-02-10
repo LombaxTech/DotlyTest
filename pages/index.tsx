@@ -27,7 +27,7 @@ export default function App() {
   if (!userLoading && !user)
     return (
       <div className="flex-1 flex flex-col items-center pt-36">
-        <h1 className="text-4xl font-bold text-center">
+        <h1 className="lg:text-4xl lg:font-bold text-center text-3xl font-semibold">
           Sign in to give Dotly a go!
         </h1>
       </div>
