@@ -46,7 +46,7 @@ export default function MyProfile() {
   if (user)
     return (
       <div className="p-10 flex flex-col items-center">
-        <div className="flex flex-col gap-6 w-4/12">
+        <div className="flex flex-col gap-6 lg:w-4/12 w-full">
           <h1 className="font-bold text-xl">Edit Profile</h1>
           <div className="flex flex-col gap-2">
             <label>Name: </label>
