@@ -60,6 +60,9 @@ export default function Navbar() {
         )}
         {user && (
           <>
+            <a target="_blank" href={`/report-bug`}>
+              Report Bug
+            </a>
             <Link href={`/my-profile`}>Profile</Link>
             <li className="cursor-pointer" onClick={signout}>
               Sign Out
