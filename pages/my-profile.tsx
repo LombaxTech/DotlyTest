@@ -1,11 +1,20 @@
-import React, { useContext, useEffect, useRef, useState } from "react";
+import React, {
+  useContext,
+  useEffect,
+  useRef,
+  useState,
+  Fragment,
+} from "react";
 import { AuthContext } from "@/context/AuthContext";
 import {
   db,
   // storage
 } from "@/firebase";
-import { doc, setDoc, updateDoc } from "firebase/firestore";
+import { deleteDoc, doc, setDoc, updateDoc } from "firebase/firestore";
 import { getDownloadURL, ref, uploadBytes } from "firebase/storage";
+import { Dialog, Transition } from "@headlessui/react";
+import { deleteUser, getAuth, reauthenticateWithPopup } from "firebase/auth";
+import { useRouter } from "next/router";
 
 export default function MyProfile() {
   const { user, setUser } = useContext(AuthContext);
@@ -17,6 +26,9 @@ export default function MyProfile() {
 
   const [changesSaved, setChangesSaved] = useState(false);
   const [error, setError] = useState(false);
+
+  // todo: change this to default false
+  const [deleteAccountModalOpen, setDeleteAccountModalOpen] = useState(true);
 
   useEffect(() => {
     if (!user) return;
@@ -85,7 +97,122 @@ export default function MyProfile() {
               Changes saved successfully.
             </div>
           )}
+
+          <h1
+            className="cursor-pointer"
+            onClick={() => setDeleteAccountModalOpen(true)}
+          >
+            Delete Account
+          </h1>
+
+          <DeleteAccountModal
+            deleteAccountModalOpen={deleteAccountModalOpen}
+            setDeleteAccountModalOpen={setDeleteAccountModalOpen}
+          />
         </div>
       </div>
     );
+}
+
+function DeleteAccountModal({
+  deleteAccountModalOpen,
+  setDeleteAccountModalOpen,
+}: {
+  deleteAccountModalOpen: any;
+  setDeleteAccountModalOpen: any;
+}) {
+  function closeModal() {
+    setDeleteAccountModalOpen(false);
+  }
+
+  function openModal() {
+    setDeleteAccountModalOpen(true);
+  }
+
+  const router = useRouter();
+
+  const deleteAccount = async () => {
+    try {
+      const auth = getAuth();
+      const user: any = auth.currentUser;
+
+      console.log("deleting user!");
+
+      const userId = user.uid;
+
+      // todo: error with not signed in recently
+
+      await deleteDoc(doc(db, "users", userId));
+      await deleteUser(user);
+
+      router.push("/");
+
+      console.log("deleted account...");
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
+  return (
+    <Transition appear show={deleteAccountModalOpen} as={Fragment}>
+      <Dialog as="div" className="relative z-10" onClose={closeModal}>
+        <Transition.Child
+          as={Fragment}
+          enter="ease-out duration-300"
+          enterFrom="opacity-0"
+          enterTo="opacity-100"
+          leave="ease-in duration-200"
+          leaveFrom="opacity-100"
+          leaveTo="opacity-0"
+        >
+          <div className="fixed inset-0 bg-black/25" />
+        </Transition.Child>
+
+        <div className="fixed inset-0 overflow-y-auto">
+          <div className="flex min-h-full items-center justify-center p-4 text-center">
+            <Transition.Child
+              as={Fragment}
+              enter="ease-out duration-300"
+              enterFrom="opacity-0 scale-95"
+              enterTo="opacity-100 scale-100"
+              leave="ease-in duration-200"
+              leaveFrom="opacity-100 scale-100"
+              leaveTo="opacity-0 scale-95"
+            >
+              <Dialog.Panel className="w-full max-w-md transform overflow-hidden rounded-2xl bg-white p-6 text-left align-middle shadow-xl transition-all">
+                <Dialog.Title
+                  as="h3"
+                  className="text-lg font-medium leading-6 text-gray-900"
+                >
+                  Account Deletion Confirmation
+                </Dialog.Title>
+                <div className="mt-2">
+                  <p className="text-sm text-gray-500">
+                    Are you sure you want to delete your account? This action is
+                    irreversible.
+                  </p>
+                </div>
+
+                <div className="mt-4 flex gap-2">
+                  {/* <button
+                    type="button"
+                    className="inline-flex justify-center rounded-md border border-transparent bg-blue-100 px-4 py-2 text-sm font-medium text-blue-900 hover:bg-blue-200 focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 focus-visible:ring-offset-2"
+                    onClick={closeModal}
+                  >
+                    Got it, thanks!
+                  </button> */}
+                  <button className="btn" onClick={deleteAccount}>
+                    Delete
+                  </button>
+                  <button className="btn" onClick={closeModal}>
+                    Cancel
+                  </button>
+                </div>
+              </Dialog.Panel>
+            </Transition.Child>
+          </div>
+        </div>
+      </Dialog>
+    </Transition>
+  );
 }
