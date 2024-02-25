@@ -63,6 +63,7 @@ export default function Navbar() {
             <a target="_blank" href={`/report-bug`}>
               Report Bug
             </a>
+            <Link href={`/feedback`}>Give Feedback</Link>
             <Link href={`/my-profile`}>Profile</Link>
             <li className="cursor-pointer" onClick={signout}>
               Sign Out
