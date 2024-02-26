@@ -42,6 +42,7 @@ export default function SetupAccount() {
       name,
       email: user.email,
       about,
+      createdAt: new Date(),
       // profilePictureUrl: imageUrl,
     };
 

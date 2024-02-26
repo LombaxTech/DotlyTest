@@ -9,3 +9,20 @@ export function getCurrentDateTimeString() {
 
   return `${year}-${month}-${day} ${hours}:${minutes}:${seconds}`;
 }
+
+export function getDifferenceInDays(startDate: any, endDate: any) {
+  // Convert both dates to milliseconds
+  const startMilliseconds = startDate.getTime();
+  const endMilliseconds = endDate.getTime();
+
+  // Calculate the difference in milliseconds
+  const differenceMilliseconds = Math.abs(endMilliseconds - startMilliseconds);
+
+  // Convert the difference to days
+  const millisecondsInADay = 1000 * 60 * 60 * 24;
+  const differenceInDays = Math.floor(
+    differenceMilliseconds / millisecondsInADay
+  );
+
+  return differenceInDays;
+}
