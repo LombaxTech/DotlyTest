@@ -9,7 +9,11 @@ import { Dialog, Transition } from "@headlessui/react";
 
 const provider = new GoogleAuthProvider();
 
-export default function Navbar() {
+type Params = {
+  didNotFillOutFeedbackForm?: boolean;
+};
+
+export default function Navbar({ didNotFillOutFeedbackForm }: Params) {
   const { user, userLoading } = useContext(AuthContext);
   const router = useRouter();
 
@@ -48,6 +52,27 @@ export default function Navbar() {
       console.log(error);
     }
   };
+
+  if (didNotFillOutFeedbackForm)
+    return (
+      <div className="p-4 flex items-center justify-between shadow-md">
+        <h1 className="font-bold italic">
+          <Link href={"/"}>DotlyDemo</Link>
+        </h1>
+        <ul className="flex gap-4">
+          {!user && (
+            <GoogleButton onClick={signinWithGoogle} buttonText="Sign In" />
+          )}
+          {user && (
+            <>
+              <li className="cursor-pointer" onClick={signout}>
+                Sign Out
+              </li>
+            </>
+          )}
+        </ul>
+      </div>
+    );
 
   return (
     <div className="p-4 flex items-center justify-between shadow-md">
