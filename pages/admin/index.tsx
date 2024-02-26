@@ -98,9 +98,9 @@ export default function FeedbackAndReports() {
           <h1 className="">Feedback</h1>
           <div className="flex flex-col">
             {feedbacks &&
-              feedbacks.map((feedback: any) => {
+              feedbacks.map((feedback: any, i: any) => {
                 return (
-                  <div className="p-2 flex flex-col border">
+                  <div className="p-2 flex flex-col border" key={i}>
                     <span className="">{feedback.feedbackText}</span>
                     <span className="">By: {feedback.user.name}</span>
                     <span className="">
