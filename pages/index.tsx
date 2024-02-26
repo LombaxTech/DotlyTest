@@ -22,7 +22,9 @@ export default function App() {
 
   if (!userLoading && user?.setup == false) return <SetupAccount />;
 
-  if (user) return <ChatPage />;
+  if (user) router.push("/chats");
+
+  // if (user) return <ChatPage />;
 
   if (!userLoading && !user)
     return (
