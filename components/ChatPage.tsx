@@ -212,6 +212,7 @@ export default function ChatPage({ id }: Props) {
               quickGenOpen={quickGenOpen}
               setQuickGenOpen={setQuickGenOpen}
               setMessages={setMessages}
+              setChat={setChat}
             />
           </div>
         ) : (
@@ -259,9 +260,9 @@ export default function ChatPage({ id }: Props) {
           >
             {loading ? "Sending Message" : "Send"}
           </button>
-          <button className="btn" onClick={logMessages}>
+          {/* <button className="btn" onClick={logMessages}>
             Log messages
-          </button>
+          </button> */}
         </div>
       </div>
     );
@@ -272,11 +273,13 @@ function QuickGenerate({
   setQuickGenOpen,
   quickGenMode,
   setMessages,
+  setChat,
 }: {
   quickGenOpen: any;
   setQuickGenOpen: any;
   quickGenMode: GenMode;
   setMessages: any;
+  setChat: any;
 }) {
   const closeModal = () => setQuickGenOpen(false);
   const openModal = () => setQuickGenOpen(true);
@@ -293,16 +296,23 @@ function QuickGenerate({
       content: `You are Dotly, a social media sidekick that helps users with any questions or issues they have with social media. If a user asks you to generate captions or hashtags, you also casually add  on "#getdotly" without talking too much about it. The user you will be helping is called ${user.name} and has described themselves using the following words: "${user.about}"`,
     };
 
-    let messages = [initMessage];
+    let newMessage: any;
 
-    let newMessage = {
-      role: "user",
-      // todo: add captions stuff here
-      content: `Generate captions for an image of a dog playing with a child in a garden`,
-    };
+    if (mode === "captions") {
+      newMessage = {
+        role: "user",
+        content: `Generate captions for an image of a dog playing with a child in a garden`,
+      };
+    }
 
-    // setMessages((oldMessages: any) => [...oldMessages, newMessage]);
-    messages.push(newMessage);
+    if (mode === "repurpose") {
+      newMessage = {
+        role: "user",
+        content: `Repurpose the following piece of content as a fresh piece of content for me to post: "${contentToBeRepurposed}"`,
+      };
+    }
+
+    let messages = [initMessage, newMessage];
 
     try {
       let res = await axios.post(`${url}/api/get-completion`, { messages });
@@ -311,6 +321,21 @@ function QuickGenerate({
         role: "assistant",
         content: res.data.result,
       };
+
+      const chatId = getCurrentDateTimeString();
+
+      const newChat = {
+        id: chatId,
+        createdAt: new Date(),
+        chatTitle: getCurrentDateTimeString(),
+        messages: [initMessage, newMessage, receivedMessage],
+      };
+
+      setChat(newChat);
+
+      await updateDoc(doc(db, "users", user.uid), {
+        chats: arrayUnion(newChat),
+      });
 
       messages.push(receivedMessage);
       setMessages(messages);
@@ -391,11 +416,25 @@ function QuickGenerate({
                     >
                       Content Ideation
                     </Dialog.Title>
-                    <div className="mt-2">
+                    <div className="mt-2 flex flex-col gap-4">
                       <p className="text-sm text-gray-500">
-                        Are you sure you want to delete your account? This
-                        action is irreversible.
+                        What would you like to do?
                       </p>
+                      <textarea className="p-2" />
+                      <select className="select w-full">
+                        <option disabled selected>
+                          Film yourself?
+                        </option>
+                        <option>Film</option>
+                        <option>Do not film</option>
+                      </select>
+                      <select className="select w-full">
+                        <option disabled selected>
+                          Voice over?
+                        </option>
+                        <option>voice over</option>
+                        <option>no voice over</option>
+                      </select>
                     </div>
                     <div className="mt-4 flex gap-2">
                       <button
@@ -421,11 +460,12 @@ function QuickGenerate({
                     </Dialog.Title>
                     <div className="mt-2">
                       <textarea
-                        className="p-2 border"
+                        className="p-2 border w-full"
                         value={contentToBeRepurposed}
                         onChange={(e) =>
                           setContentToBeRepurposed(e.target.value)
                         }
+                        placeholder="Enter the content you would like to be repurposed"
                       ></textarea>
                     </div>
                     <div className="mt-4 flex gap-2">
