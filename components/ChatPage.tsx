@@ -435,34 +435,49 @@ function QuickGenerate({
                 )}
 
                 {quickGenMode === "content-ideation" && (
-                  <>
+                  <div className="flex flex-col gap-4">
                     <Dialog.Title
                       as="h3"
-                      className="text-lg font-medium leading-6 text-gray-900"
+                      className="text-center text-lg font-medium leading-6 text-gray-900"
                     >
                       Content Ideation
                     </Dialog.Title>
-                    <div className="mt-2 flex flex-col gap-4">
-                      <p className="text-sm text-gray-500">
-                        What would you like to do?
-                      </p>
-                      <textarea className="p-2" />
-                      <select className="select w-full">
-                        <option disabled selected>
-                          Film yourself?
-                        </option>
-                        <option>Film</option>
-                        <option>Do not film</option>
-                      </select>
-                      <select className="select w-full">
-                        <option disabled selected>
-                          Voice over?
-                        </option>
-                        <option>voice over</option>
-                        <option>no voice over</option>
-                      </select>
+
+                    <div className="flex items-center gap-4 w-9/12 mx-auto">
+                      <label className="w-8/12">Happy to film yourself: </label>
+                      <div className="border flex-1">
+                        <select className="select w-full max-w-xs">
+                          <option disabled selected>
+                            Yes/No
+                          </option>
+                          <option>Yes</option>
+                          <option>No</option>
+                        </select>
+                      </div>
                     </div>
-                    <div className="mt-4 flex gap-2">
+
+                    <div className="flex items-center gap-4 w-9/12 mx-auto">
+                      <label className="w-8/12">Happy to voiceover: </label>
+                      <div className="border flex-1">
+                        <select className="select w-full max-w-xs">
+                          <option disabled selected>
+                            Yes/No
+                          </option>
+                          <option>Yes</option>
+                          <option>No</option>
+                        </select>
+                      </div>
+                    </div>
+
+                    <div className="flex items-center gap-4 w-9/12 mx-auto">
+                      <label className="w-8/12">How long do you have: </label>
+                      <div className="flex-1 flex justify-center items-center gap-2">
+                        <input type="text" className="w-3/4 p-2 border" />
+                        <span>min</span>
+                      </div>
+                    </div>
+
+                    <div className="mt-4 flex justify-center gap-2">
                       <button
                         className="btn"
                         onClick={() => generate("ideation")}
@@ -473,7 +488,7 @@ function QuickGenerate({
                         Cancel
                       </button>
                     </div>
-                  </>
+                  </div>
                 )}
 
                 {quickGenMode === "repurpose-content" && (
