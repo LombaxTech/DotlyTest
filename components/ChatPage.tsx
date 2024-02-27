@@ -170,43 +170,45 @@ export default function ChatPage({ id }: Props) {
       <div className="flex-1 flex flex-col  overflow-hidden">
         {messages && messages.length === 0 ? (
           <div className="flex-1 flex flex-col gap-4 justify-center items-center">
-            <div className="flex flex-col gap-4 items-center justify-center flex-1">
-              <img
-                src="https://assets-global.website-files.com/6554e01bb9073d017c926a10/6556aac1a5d5337668a7438b_Dotly%20character.png"
-                className="lg:w-36 w-32"
-              />
-              <h1 className="text-2xl font-medium">Ask away!</h1>
+            <div className="flex flex-col gap-8 items-center justify-center flex-1">
+              <div className="flex items-center gap-3">
+                <h1 className="text-5xl font-medium">Ready To Post?</h1>
+                <img
+                  src="https://assets-global.website-files.com/6554e01bb9073d017c926a10/6556aac1a5d5337668a7438b_Dotly%20character.png"
+                  className="lg:w-16 w-32"
+                />
+              </div>
+              <div className="w-full flex items-center justify-center gap-2">
+                <span
+                  className={`py-4 px-4 cursor-pointer border-gray-700 border-2 font-bold`}
+                  onClick={() => {
+                    setQuickGenMode("captions");
+                    setQuickGenOpen(true);
+                  }}
+                >
+                  Generate Captions
+                </span>
+                <span
+                  className={`py-4 px-4 cursor-pointer border-gray-700 border-2 font-bold`}
+                  onClick={() => {
+                    setQuickGenMode("repurpose-content");
+                    setQuickGenOpen(true);
+                  }}
+                >
+                  Repurpose Content
+                </span>
+                <span
+                  className={`py-4 px-4 cursor-pointer border-gray-700 border-2 font-bold`}
+                  onClick={() => {
+                    setQuickGenMode("content-ideation");
+                    setQuickGenOpen(true);
+                  }}
+                >
+                  Content Ideation
+                </span>
+              </div>
             </div>
 
-            <div className="w-full flex items-center justify-center gap-2">
-              <span
-                className={`p-2 rounded-full cursor-pointer border-gray-700 border-2 font-bold`}
-                onClick={() => {
-                  setQuickGenMode("captions");
-                  setQuickGenOpen(true);
-                }}
-              >
-                Generate Captions
-              </span>
-              <span
-                className={`p-2 rounded-full cursor-pointer border-gray-700 border-2 font-bold`}
-                onClick={() => {
-                  setQuickGenMode("repurpose-content");
-                  setQuickGenOpen(true);
-                }}
-              >
-                Repurpose Content
-              </span>
-              <span
-                className={`p-2 rounded-full cursor-pointer border-gray-700 border-2 font-bold`}
-                onClick={() => {
-                  setQuickGenMode("content-ideation");
-                  setQuickGenOpen(true);
-                }}
-              >
-                Content Ideation
-              </span>
-            </div>
             <QuickGenerate
               quickGenMode={quickGenMode}
               quickGenOpen={quickGenOpen}
@@ -245,6 +247,10 @@ export default function ChatPage({ id }: Props) {
             <div className="" ref={newestMessageRef}></div>
           </div>
         )}
+        {messages && messages.length === 0 ? (
+          <h1 className="text-center">Need help with something else?</h1>
+        ) : null}
+
         <div className="p-4 lg:px-32 bg-white flex justify-center items-center">
           <input
             type="text"
