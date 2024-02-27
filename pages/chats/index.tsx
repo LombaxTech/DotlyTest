@@ -10,10 +10,7 @@ export default function AllChats() {
   const [chats, setChats] = useState<any>([]);
 
   useEffect(() => {
-    if (user) setChats(user.chats);
-
-    console.log("here are the chats");
-    console.log(user.chats);
+    if (user) setChats(user.chats || []);
   }, [user]);
 
   const createNewChat = async () => {
@@ -23,8 +20,8 @@ export default function AllChats() {
   if (user)
     return (
       <div className="flex justify-center p-10">
-        <div className="flex flex-col gap-2">
-          <h1 className="text-2xl font-bold"> Chats</h1>
+        <div className="flex flex-col gap-4 w-4/12">
+          <h1 className="text-2xl font-bold text-center"> Chats</h1>
 
           {chats &&
             chats.map((chat: any) => {

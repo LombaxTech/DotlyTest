@@ -61,36 +61,38 @@ export default function ReportBug() {
 
   return (
     <div className="p-10 flex flex-col">
-      <h1 className="text-2xl font-bold">Bug Report</h1>
-      <textarea
-        className="p-2 outline-none border-2"
-        value={bugInputText}
-        onChange={(e) => setBugInputText(e.target.value)}
-      />
+      <div className="w-6/12 flex flex-col gap-6">
+        <h1 className="text-2xl font-bold">Bug Report</h1>
+        <textarea
+          className="p-2 outline-none border-2"
+          value={bugInputText}
+          onChange={(e) => setBugInputText(e.target.value)}
+        />
 
-      <input
-        type="file"
-        ref={fileInputRef}
-        onChange={(e: any) => setFile(e.target.files[0])}
-        // style={{ display: "none" }}
-      />
-      {file && (
-        <div className="relative">
-          <img src={URL.createObjectURL(file)} width="100" />
-          <div className="cursor-pointer" onClick={() => setFile(null)}>
-            Delete
+        <input
+          type="file"
+          ref={fileInputRef}
+          onChange={(e: any) => setFile(e.target.files[0])}
+          // style={{ display: "none" }}
+        />
+        {file && (
+          <div className="relative">
+            <img src={URL.createObjectURL(file)} width="100" />
+            <div className="cursor-pointer" onClick={() => setFile(null)}>
+              Delete
+            </div>
           </div>
-        </div>
-      )}
+        )}
 
-      <button className="btn" onClick={sendReport} disabled={!bugInputText}>
-        Submit Report
-      </button>
-      {success && (
-        <div className="bg-green-200 p-2 text-green-800">
-          Reported Bug sucessfully
-        </div>
-      )}
+        <button className="btn" onClick={sendReport} disabled={!bugInputText}>
+          Submit Report
+        </button>
+        {success && (
+          <div className="bg-green-200 p-2 text-green-800">
+            Reported Bug sucessfully
+          </div>
+        )}
+      </div>
     </div>
   );
 }

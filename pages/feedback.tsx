@@ -47,21 +47,27 @@ export default function Feedback() {
 
   return (
     <div className="p-10 flex flex-col">
-      <h1 className="text-2xl font-bold">Feedback</h1>
-      <textarea
-        className="p-2 outline-none border-2"
-        value={feedbackText}
-        onChange={(e) => setFeedbackText(e.target.value)}
-      />
+      <div className="w-6/12 flex flex-col gap-6">
+        <h1 className="text-2xl font-bold">Feedback</h1>
+        <textarea
+          className="p-2 outline-none border-2"
+          value={feedbackText}
+          onChange={(e) => setFeedbackText(e.target.value)}
+        />
 
-      <button className="btn" onClick={submitFeedback} disabled={!feedbackText}>
-        Submit Feedback
-      </button>
-      {success && (
-        <div className="bg-green-200 p-2 text-green-800">
-          Thank you for your feedback!
-        </div>
-      )}
+        <button
+          className="btn"
+          onClick={submitFeedback}
+          disabled={!feedbackText}
+        >
+          Submit Feedback
+        </button>
+        {success && (
+          <div className="bg-green-200 p-2 text-green-800">
+            Thank you for your feedback!
+          </div>
+        )}
+      </div>
     </div>
   );
 }
