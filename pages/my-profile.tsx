@@ -8,12 +8,18 @@ import React, {
 import { AuthContext } from "@/context/AuthContext";
 import {
   db,
+  auth,
   // storage
 } from "@/firebase";
 import { deleteDoc, doc, setDoc, updateDoc } from "firebase/firestore";
 import { getDownloadURL, ref, uploadBytes } from "firebase/storage";
 import { Dialog, Transition } from "@headlessui/react";
-import { deleteUser, getAuth, reauthenticateWithPopup } from "firebase/auth";
+import {
+  deleteUser,
+  getAuth,
+  reauthenticateWithPopup,
+  signOut,
+} from "firebase/auth";
 import { useRouter } from "next/router";
 
 export default function MyProfile() {
@@ -27,8 +33,7 @@ export default function MyProfile() {
   const [changesSaved, setChangesSaved] = useState(false);
   const [error, setError] = useState(false);
 
-  // todo: change this to default false
-  const [deleteAccountModalOpen, setDeleteAccountModalOpen] = useState(true);
+  const [deleteAccountModalOpen, setDeleteAccountModalOpen] = useState(false);
 
   useEffect(() => {
     if (!user) return;
@@ -129,22 +134,13 @@ function DeleteAccountModal({
     setDeleteAccountModalOpen(true);
   }
 
+  const { user } = useContext(AuthContext);
   const router = useRouter();
 
   const deleteAccount = async () => {
     try {
-      const auth = getAuth();
-      const user: any = auth.currentUser;
-
-      console.log("deleting user!");
-
-      const userId = user.uid;
-
-      // todo: error with not signed in recently
-
-      await deleteDoc(doc(db, "users", userId));
-      await deleteUser(user);
-
+      await deleteDoc(doc(db, "users", user.uid));
+      await signOut(auth);
       router.push("/");
 
       console.log("deleted account...");
