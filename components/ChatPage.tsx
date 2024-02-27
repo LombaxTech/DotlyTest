@@ -381,26 +381,46 @@ function QuickGenerate({
             >
               <Dialog.Panel className="w-full max-w-md transform overflow-hidden rounded-2xl bg-white p-6 text-left align-middle shadow-xl transition-all">
                 {quickGenMode === "captions" && (
-                  <>
+                  <div className="flex flex-col gap-4">
                     <Dialog.Title
                       as="h3"
-                      className="text-lg font-medium leading-6 text-gray-900"
+                      className="text-center text-lg font-medium leading-6 text-gray-900"
                     >
                       Generate Captions
                     </Dialog.Title>
                     <div className="mt-2 flex flex-col gap-2">
-                      <p className="text-sm text-gray-500">
+                      {/* <p className="text-sm text-gray-500 text-center">
                         Drop an image here to generate captions for it
-                      </p>
-                      <select className="select w-full max-w-xs">
-                        <option disabled selected>
-                          Choose platform
-                        </option>
-                        <option>Instagram</option>
-                        <option>Tiktok</option>
-                      </select>
+                      </p> */}
+                      <button className="btn self-center">Upload</button>
+
+                      <div className="flex items-center gap-4 w-9/12 mx-auto">
+                        <label className="w-3/12">Platform: </label>
+                        <div className="border flex-1">
+                          <select className="select w-full max-w-xs">
+                            <option disabled selected>
+                              Choose platform
+                            </option>
+                            <option>Instagram</option>
+                            <option>Tiktok</option>
+                          </select>
+                        </div>
+                      </div>
+
+                      <div className="flex items-center gap-4 w-9/12 mx-auto">
+                        <label className="w-3/12">Hashtags: </label>
+                        <div className="border flex-1">
+                          <select className="select w-full max-w-xs">
+                            <option disabled selected>
+                              Yes/No
+                            </option>
+                            <option>Yes</option>
+                            <option>No</option>
+                          </select>
+                        </div>
+                      </div>
                     </div>
-                    <div className="mt-4 flex gap-2">
+                    <div className="mt-4 flex justify-center gap-2">
                       <button
                         className="btn"
                         onClick={() => generate("captions")}
@@ -411,7 +431,7 @@ function QuickGenerate({
                         Cancel
                       </button>
                     </div>
-                  </>
+                  </div>
                 )}
 
                 {quickGenMode === "content-ideation" && (
