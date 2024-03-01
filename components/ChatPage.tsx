@@ -167,110 +167,143 @@ export default function ChatPage({ id }: Props) {
 
   if (user)
     return (
-      <div className="flex-1 flex flex-col  overflow-hidden">
-        {messages && messages.length === 0 ? (
-          <div className="flex-1 flex flex-col gap-4 justify-center items-center">
-            <div className="flex flex-col gap-8 items-center justify-center flex-1">
-              <div className="flex items-center gap-3">
-                <h1 className="text-5xl font-medium">Ready To Post?</h1>
-                <img
-                  src="https://assets-global.website-files.com/6554e01bb9073d017c926a10/6556aac1a5d5337668a7438b_Dotly%20character.png"
-                  className="lg:w-16 w-32"
-                />
-              </div>
-              <div className="w-full flex items-center justify-center gap-2">
-                <span
-                  className={`py-4 px-4 cursor-pointer border-gray-700 border-2 font-bold`}
-                  onClick={() => {
-                    setQuickGenMode("captions");
-                    setQuickGenOpen(true);
-                  }}
-                >
-                  Generate Captions
-                </span>
-                <span
-                  className={`py-4 px-4 cursor-pointer border-gray-700 border-2 font-bold`}
-                  onClick={() => {
-                    setQuickGenMode("repurpose-content");
-                    setQuickGenOpen(true);
-                  }}
-                >
-                  Repurpose Content
-                </span>
-                <span
-                  className={`py-4 px-4 cursor-pointer border-gray-700 border-2 font-bold`}
-                  onClick={() => {
-                    setQuickGenMode("content-ideation");
-                    setQuickGenOpen(true);
-                  }}
-                >
-                  Content Ideation
-                </span>
+      <>
+        <div className="flex-1 flex flex-col  overflow-hidden">
+          {messages && messages.length === 0 ? (
+            <div className="flex-1 flex flex-col gap-4 justify-center items-center">
+              <div className="flex flex-col gap-8 items-center justify-center flex-1">
+                <div className="flex items-center gap-3">
+                  <h1 className="text-5xl font-medium">Ready To Post?</h1>
+                  <img
+                    src="https://assets-global.website-files.com/6554e01bb9073d017c926a10/6556aac1a5d5337668a7438b_Dotly%20character.png"
+                    className="lg:w-16 w-32"
+                  />
+                </div>
+                <div className="w-full flex items-center justify-center gap-2">
+                  <span
+                    className={`py-4 px-4 cursor-pointer border-gray-700 border-2 font-bold`}
+                    onClick={() => {
+                      setQuickGenMode("captions");
+                      setQuickGenOpen(true);
+                    }}
+                  >
+                    Generate Captions
+                  </span>
+                  <span
+                    className={`py-4 px-4 cursor-pointer border-gray-700 border-2 font-bold`}
+                    onClick={() => {
+                      setQuickGenMode("repurpose-content");
+                      setQuickGenOpen(true);
+                    }}
+                  >
+                    Repurpose Content
+                  </span>
+                  <span
+                    className={`py-4 px-4 cursor-pointer border-gray-700 border-2 font-bold`}
+                    onClick={() => {
+                      setQuickGenMode("content-ideation");
+                      setQuickGenOpen(true);
+                    }}
+                  >
+                    Content Ideation
+                  </span>
+                </div>
               </div>
             </div>
+          ) : (
+            <div className="lg:p-10 lg:px-32 p-4 flex-1 flex flex-col gap-4 overflow-y-auto">
+              {messages &&
+                messages.map((message: any, i: any) => {
+                  const messageFromUser = message.role === "user";
 
-            <QuickGenerate
-              quickGenMode={quickGenMode}
-              quickGenOpen={quickGenOpen}
-              setQuickGenOpen={setQuickGenOpen}
-              setMessages={setMessages}
-              setChat={setChat}
-            />
-          </div>
-        ) : (
-          <div className="lg:p-10 lg:px-32 p-4 flex-1 flex flex-col gap-4 overflow-y-auto">
-            {messages &&
-              messages.map((message: any, i: any) => {
-                const messageFromUser = message.role === "user";
-
-                if (message.role === "system") return null;
-                if (message.role === "user" || "assistant")
-                  return (
-                    <div
-                      className="flex flex-col gap-1"
-                      key={i}
-                      onClick={() => console.log(message.role)}
-                    >
-                      <span className="font-thin text-sm">
-                        {messageFromUser ? "You" : "Dotly"}
-                      </span>
+                  if (message.role === "system") return null;
+                  if (message.role === "user" || "assistant")
+                    return (
                       <div
-                        className={`p-2 rounded-md w-fit ${
-                          messageFromUser ? "bg-gray-200" : "bg-yellow-300"
-                        }`}
+                        className="flex flex-col gap-1"
+                        key={i}
+                        onClick={() => console.log(message.role)}
                       >
-                        {message.content}
+                        <span className="font-thin text-sm">
+                          {messageFromUser ? "You" : "Dotly"}
+                        </span>
+                        <div
+                          className={`p-2 rounded-md w-fit ${
+                            messageFromUser ? "bg-gray-200" : "bg-yellow-300"
+                          }`}
+                        >
+                          {message.content}
+                        </div>
                       </div>
-                    </div>
-                  );
-              })}
-            <div className="" ref={newestMessageRef}></div>
-          </div>
-        )}
-        {messages && messages.length === 0 ? (
-          <h1 className="text-center">Need help with something else?</h1>
-        ) : null}
+                    );
+                })}
+              <div className="" ref={newestMessageRef}></div>
+            </div>
+          )}
+          {messages && messages.length === 0 ? (
+            <h1 className="text-center">Need help with something else?</h1>
+          ) : null}
 
-        <div className="p-4 lg:px-32 bg-white flex justify-center items-center">
-          <input
-            type="text"
-            className="p-2 border flex-1"
-            placeholder="Enter your message"
-            value={messageInput}
-            onChange={(e) => setMessageInput(e.target.value)}
-          />
-          <button
-            className="btn btn-primary px-16"
-            disabled={loading}
-            onClick={sendMessage}
-          >
-            {loading ? "Sending Message" : "Send"}
-          </button>
-          {/* <button className="btn" onClick={logMessages}>
+          <div className="p-4 lg:px-32 bg-white flex flex-col justify-center items-center gap-4">
+            <div className="w-full flex-1 flex justify-center items-center">
+              <input
+                type="text"
+                className="p-2 border flex-1"
+                placeholder="Enter your message"
+                value={messageInput}
+                onChange={(e) => setMessageInput(e.target.value)}
+              />
+              <button
+                className="btn btn-primary px-16"
+                disabled={loading}
+                onClick={sendMessage}
+              >
+                {loading ? "Sending Message" : "Send"}
+              </button>
+            </div>
+            <div className="w-full flex items-center justify-center gap-2">
+              <span
+                className={`p-2 cursor-pointer border-gray-700 border-2 font-bold`}
+                onClick={() => {
+                  setQuickGenMode("captions");
+                  setQuickGenOpen(true);
+                }}
+              >
+                Generate Captions
+              </span>
+              <span
+                className={`p-2 cursor-pointer border-gray-700 border-2 font-bold`}
+                onClick={() => {
+                  setQuickGenMode("repurpose-content");
+                  setQuickGenOpen(true);
+                }}
+              >
+                Repurpose Content
+              </span>
+              <span
+                className={`p-2 cursor-pointer border-gray-700 border-2 font-bold`}
+                onClick={() => {
+                  setQuickGenMode("content-ideation");
+                  setQuickGenOpen(true);
+                }}
+              >
+                Content Ideation
+              </span>
+            </div>
+            {/* <button className="btn" onClick={logMessages}>
             Log messages
           </button> */}
+          </div>
         </div>
-      </div>
+        <QuickGenerate
+          quickGenMode={quickGenMode}
+          quickGenOpen={quickGenOpen}
+          setQuickGenOpen={setQuickGenOpen}
+          existingMessages={messages}
+          setMessages={setMessages}
+          setChat={setChat}
+        />
+      </>
     );
 }
 
@@ -278,12 +311,14 @@ function QuickGenerate({
   quickGenOpen,
   setQuickGenOpen,
   quickGenMode,
+  existingMessages,
   setMessages,
   setChat,
 }: {
   quickGenOpen: any;
   setQuickGenOpen: any;
   quickGenMode: GenMode;
+  existingMessages: any;
   setMessages: any;
   setChat: any;
 }) {
@@ -293,6 +328,10 @@ function QuickGenerate({
   const { user } = useContext(AuthContext);
 
   const [contentToBeRepurposed, setContentToBeRepurposed] = useState<any>("");
+
+  const [availableMinutes, setAvailableMinutes] = useState<any>("");
+  const [happyToFilmSelf, setHappyToFilmSelf] = useState<"Yes" | "No">("No");
+  const [happyToVoiceSelf, setHappyToVoiceSelf] = useState<"Yes" | "No">("No");
 
   const generate = async (mode: "captions" | "repurpose" | "ideation") => {
     // setLoading(true);
@@ -315,6 +354,13 @@ function QuickGenerate({
       newMessage = {
         role: "user",
         content: `Repurpose the following piece of content as a fresh piece of content for me to post: "${contentToBeRepurposed}"`,
+      };
+    }
+
+    if (mode === "ideation") {
+      newMessage = {
+        role: "user",
+        content: `I would like an idea to post on my social media. Am I happy to film myself? ${happyToFilmSelf}. Am I happy to do a voice over? ${happyToVoiceSelf}. How many minutes do I have available for this? ${availableMinutes}. Given this information and my background, please give me an idea.`,
       };
     }
 
@@ -446,10 +492,12 @@ function QuickGenerate({
                     <div className="flex items-center gap-4 w-9/12 mx-auto">
                       <label className="w-8/12">Happy to film yourself: </label>
                       <div className="border flex-1">
-                        <select className="select w-full max-w-xs">
-                          <option disabled selected>
-                            Yes/No
-                          </option>
+                        <select
+                          className="select w-full max-w-xs"
+                          value={happyToFilmSelf}
+                          // @ts-ignore
+                          onChange={(e) => setHappyToFilmSelf(e.target.value)}
+                        >
                           <option>Yes</option>
                           <option>No</option>
                         </select>
@@ -459,10 +507,12 @@ function QuickGenerate({
                     <div className="flex items-center gap-4 w-9/12 mx-auto">
                       <label className="w-8/12">Happy to voiceover: </label>
                       <div className="border flex-1">
-                        <select className="select w-full max-w-xs">
-                          <option disabled selected>
-                            Yes/No
-                          </option>
+                        <select
+                          className="select w-full max-w-xs"
+                          value={happyToVoiceSelf}
+                          // @ts-ignore
+                          onChange={(e) => setHappyToVoiceSelf(e.target.value)}
+                        >
                           <option>Yes</option>
                           <option>No</option>
                         </select>
@@ -472,7 +522,12 @@ function QuickGenerate({
                     <div className="flex items-center gap-4 w-9/12 mx-auto">
                       <label className="w-8/12">How long do you have: </label>
                       <div className="flex-1 flex justify-center items-center gap-2">
-                        <input type="text" className="w-3/4 p-2 border" />
+                        <input
+                          type="text"
+                          className="w-3/4 p-2 border"
+                          value={availableMinutes}
+                          onChange={(e) => setAvailableMinutes(e.target.value)}
+                        />
                         <span>min</span>
                       </div>
                     </div>
