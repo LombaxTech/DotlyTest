@@ -216,6 +216,7 @@ export default function ChatPage({ id }: Props) {
                 messages.map((message: any, i: any) => {
                   const messageFromUser = message.role === "user";
 
+                  if (message?.show == false) return null;
                   if (message.role === "system") return null;
                   if (message.role === "user" || "assistant")
                     return (
@@ -261,35 +262,37 @@ export default function ChatPage({ id }: Props) {
                 {loading ? "Sending Message" : "Send"}
               </button>
             </div>
-            <div className="w-full flex items-center justify-center gap-2">
-              <span
-                className={`p-2 cursor-pointer border-gray-700 border-2 font-bold`}
-                onClick={() => {
-                  setQuickGenMode("captions");
-                  setQuickGenOpen(true);
-                }}
-              >
-                Generate Captions
-              </span>
-              <span
-                className={`p-2 cursor-pointer border-gray-700 border-2 font-bold`}
-                onClick={() => {
-                  setQuickGenMode("repurpose-content");
-                  setQuickGenOpen(true);
-                }}
-              >
-                Repurpose Content
-              </span>
-              <span
-                className={`p-2 cursor-pointer border-gray-700 border-2 font-bold`}
-                onClick={() => {
-                  setQuickGenMode("content-ideation");
-                  setQuickGenOpen(true);
-                }}
-              >
-                Content Ideation
-              </span>
-            </div>
+            {messages && messages.length > 0 ? (
+              <div className="w-full flex items-center justify-center gap-2">
+                <span
+                  className={`p-2 cursor-pointer border-gray-700 border-2 font-bold`}
+                  onClick={() => {
+                    setQuickGenMode("captions");
+                    setQuickGenOpen(true);
+                  }}
+                >
+                  Generate Captions
+                </span>
+                <span
+                  className={`p-2 cursor-pointer border-gray-700 border-2 font-bold`}
+                  onClick={() => {
+                    setQuickGenMode("repurpose-content");
+                    setQuickGenOpen(true);
+                  }}
+                >
+                  Repurpose Content
+                </span>
+                <span
+                  className={`p-2 cursor-pointer border-gray-700 border-2 font-bold`}
+                  onClick={() => {
+                    setQuickGenMode("content-ideation");
+                    setQuickGenOpen(true);
+                  }}
+                >
+                  Content Ideation
+                </span>
+              </div>
+            ) : null}
             {/* <button className="btn" onClick={logMessages}>
             Log messages
           </button> */}
@@ -301,6 +304,7 @@ export default function ChatPage({ id }: Props) {
           setQuickGenOpen={setQuickGenOpen}
           existingMessages={messages}
           setMessages={setMessages}
+          chat={chat}
           setChat={setChat}
         />
       </>
@@ -313,6 +317,7 @@ function QuickGenerate({
   quickGenMode,
   existingMessages,
   setMessages,
+  chat,
   setChat,
 }: {
   quickGenOpen: any;
@@ -320,6 +325,7 @@ function QuickGenerate({
   quickGenMode: GenMode;
   existingMessages: any;
   setMessages: any;
+  chat: any;
   setChat: any;
 }) {
   const closeModal = () => setQuickGenOpen(false);
@@ -347,6 +353,7 @@ function QuickGenerate({
       newMessage = {
         role: "user",
         content: `Generate captions for an image of a dog playing with a child in a garden`,
+        show: false,
       };
     }
 
@@ -354,6 +361,7 @@ function QuickGenerate({
       newMessage = {
         role: "user",
         content: `Repurpose the following piece of content as a fresh piece of content for me to post: "${contentToBeRepurposed}"`,
+        show: false,
       };
     }
 
@@ -361,36 +369,62 @@ function QuickGenerate({
       newMessage = {
         role: "user",
         content: `I would like an idea to post on my social media. Am I happy to film myself? ${happyToFilmSelf}. Am I happy to do a voice over? ${happyToVoiceSelf}. How many minutes do I have available for this? ${availableMinutes}. Given this information and my background, please give me an idea.`,
+        show: false,
       };
     }
 
-    let messages = [initMessage, newMessage];
+    let messages: any = [];
+
+    const chatExists = existingMessages.length > 0;
+
+    if (!chatExists) {
+      messages = [initMessage, newMessage];
+    } else if (chatExists) {
+      messages = [...existingMessages, newMessage];
+    }
 
     try {
-      let res = await axios.post(`${url}/api/get-completion`, { messages });
+      let res = await axios.post(`${url}/api/get-completion`, {
+        messages: messages.map(({ show, ...m }: { show: any }) => m),
+      });
 
       let receivedMessage = {
         role: "assistant",
         content: res.data.result,
       };
 
-      const chatId = getCurrentDateTimeString();
+      if (!chatExists) {
+        const chatId = getCurrentDateTimeString();
+        const newChat = {
+          id: chatId,
+          createdAt: new Date(),
+          chatTitle: getCurrentDateTimeString(),
+          messages: [initMessage, newMessage, receivedMessage],
+        };
+        setChat(newChat);
+        await updateDoc(doc(db, "users", user.uid), {
+          chats: arrayUnion(newChat),
+        });
+      } else {
+        const updatedChats = user.chats.map((c: any) => {
+          if (c.id !== chat.id) return c;
 
-      const newChat = {
-        id: chatId,
-        createdAt: new Date(),
-        chatTitle: getCurrentDateTimeString(),
-        messages: [initMessage, newMessage, receivedMessage],
-      };
+          if (c.id === chat.id)
+            return {
+              ...c,
+              messages: [...c.messages, ...[newMessage, receivedMessage]],
+            };
+        });
 
-      setChat(newChat);
-
-      await updateDoc(doc(db, "users", user.uid), {
-        chats: arrayUnion(newChat),
-      });
+        await updateDoc(doc(db, "users", user.uid), {
+          chats: updatedChats,
+        });
+      }
 
       messages.push(receivedMessage);
       setMessages(messages);
+
+      closeModal();
 
       // setLoading(false);
     } catch (error) {
