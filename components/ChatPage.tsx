@@ -59,6 +59,8 @@ export default function ChatPage({ id }: Props) {
   const { user } = useContext(AuthContext);
 
   const [chat, setChat] = useState<any | null>(null);
+  const [chatTitleInput, setChatTitleInput] = useState<any>("");
+  const [changesToTitleExist, setChangesToTitleExist] = useState(false);
 
   const [messageInput, setMessageInput] = useState<any>("");
   const [messages, setMessages] = useState<any>([]);
@@ -71,6 +73,14 @@ export default function ChatPage({ id }: Props) {
 
   const newestMessageRef = useRef<any>(null);
 
+  useEffect(() => {
+    if (chat) {
+      if (chatTitleInput !== chat.chatTitle)
+        return setChangesToTitleExist(true);
+      setChangesToTitleExist(false);
+    }
+  }, [chatTitleInput, chat]);
+
   // get chat if exists
   useEffect(() => {
     if (user) {
@@ -78,6 +88,7 @@ export default function ChatPage({ id }: Props) {
 
       if (currentChat) {
         setChat(currentChat);
+        setChatTitleInput(currentChat.chatTitle);
         setMessages(currentChat.messages);
       }
     }
@@ -163,6 +174,30 @@ export default function ChatPage({ id }: Props) {
     }
   };
 
+  const updateChatTitle = async () => {
+    console.log("updated chat...");
+
+    try {
+      const updatedChats = user.chats.map((c: any) => {
+        if (c.id !== chat.id) return c;
+
+        if (c.id === chat.id)
+          return {
+            ...c,
+            chatTitle: chatTitleInput,
+          };
+      });
+
+      await updateDoc(doc(db, "users", user.uid), {
+        chats: updatedChats,
+      });
+
+      console.log("updated chat");
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
   const logMessages = async () => {};
 
   if (user)
@@ -211,34 +246,55 @@ export default function ChatPage({ id }: Props) {
               </div>
             </div>
           ) : (
-            <div className="lg:p-10 lg:px-32 p-4 flex-1 flex flex-col gap-4 overflow-y-auto">
-              {messages &&
-                messages.map((message: any, i: any) => {
-                  const messageFromUser = message.role === "user";
+            <div className="flex-1 flex flex-col">
+              {/* TITLE */}
+              <div className="flex justify-center pt-2">
+                <input
+                  type="text"
+                  value={chatTitleInput}
+                  onChange={(e) => setChatTitleInput(e.target.value)}
+                  className={`bg-transparent outline-none border-none font-bold text-xl text-center`}
+                />
+                {changesToTitleExist && (
+                  <button
+                    disabled={!chatTitleInput}
+                    className="btn btn-sm"
+                    onClick={updateChatTitle}
+                  >
+                    Update chat title
+                  </button>
+                )}
+              </div>
+              {/* MESSAGES */}
+              <div className="lg:p-10 lg:px-32 p-4 flex-1 flex flex-col gap-4 overflow-y-auto">
+                {messages &&
+                  messages.map((message: any, i: any) => {
+                    const messageFromUser = message.role === "user";
 
-                  if (message?.show == false) return null;
-                  if (message.role === "system") return null;
-                  if (message.role === "user" || "assistant")
-                    return (
-                      <div
-                        className="flex flex-col gap-1"
-                        key={i}
-                        onClick={() => console.log(message.role)}
-                      >
-                        <span className="font-thin text-sm">
-                          {messageFromUser ? "You" : "Dotly"}
-                        </span>
+                    if (message?.show == false) return null;
+                    if (message.role === "system") return null;
+                    if (message.role === "user" || "assistant")
+                      return (
                         <div
-                          className={`p-2 rounded-md w-fit ${
-                            messageFromUser ? "bg-gray-200" : "bg-yellow-300"
-                          }`}
+                          className="flex flex-col gap-1"
+                          key={i}
+                          onClick={() => console.log(message.role)}
                         >
-                          {message.content}
+                          <span className="font-thin text-sm">
+                            {messageFromUser ? "You" : "Dotly"}
+                          </span>
+                          <div
+                            className={`p-2 rounded-md w-fit ${
+                              messageFromUser ? "bg-gray-200" : "bg-yellow-300"
+                            }`}
+                          >
+                            {message.content}
+                          </div>
                         </div>
-                      </div>
-                    );
-                })}
-              <div className="" ref={newestMessageRef}></div>
+                      );
+                  })}
+                <div className="" ref={newestMessageRef}></div>
+              </div>
             </div>
           )}
           {messages && messages.length === 0 ? (
