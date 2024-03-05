@@ -26,3 +26,20 @@ export function getDifferenceInDays(startDate: any, endDate: any) {
 
   return differenceInDays;
 }
+
+export function getFormattedFutureDate(inputDate: any, days: number) {
+  const formatDate = (date: any) => {
+    const day = String(date.getDate()).padStart(2, "0");
+    const month = String(date.getMonth() + 1).padStart(2, "0");
+    const year = date.getFullYear();
+    return `${day}/${month}/${year}`;
+  };
+
+  const getDateInFuture = (inputDate: any, daysToAdd: any) => {
+    const futureDate = new Date(inputDate);
+    futureDate.setDate(futureDate.getDate() + daysToAdd);
+    return formatDate(futureDate);
+  };
+
+  return getDateInFuture(inputDate, days);
+}
