@@ -132,6 +132,7 @@ export default function ChatPage({ id }: Props) {
           messages: [initMessage, newMessage, receivedMessage],
         };
         setChat(newChat);
+        setChatTitleInput(getCurrentDateTimeString());
 
         await updateDoc(doc(db, "users", user.uid), {
           chats: arrayUnion(newChat),
@@ -362,6 +363,7 @@ export default function ChatPage({ id }: Props) {
           setMessages={setMessages}
           chat={chat}
           setChat={setChat}
+          setChatTitleInput={setChatTitleInput}
         />
       </>
     );
@@ -375,6 +377,7 @@ function QuickGenerate({
   setMessages,
   chat,
   setChat,
+  setChatTitleInput,
 }: {
   quickGenOpen: any;
   setQuickGenOpen: any;
@@ -383,6 +386,7 @@ function QuickGenerate({
   setMessages: any;
   chat: any;
   setChat: any;
+  setChatTitleInput: any;
 }) {
   const closeModal = () => setQuickGenOpen(false);
   const openModal = () => setQuickGenOpen(true);
@@ -458,6 +462,8 @@ function QuickGenerate({
           messages: [initMessage, newMessage, receivedMessage],
         };
         setChat(newChat);
+        setChatTitleInput(getCurrentDateTimeString());
+
         await updateDoc(doc(db, "users", user.uid), {
           chats: arrayUnion(newChat),
         });
