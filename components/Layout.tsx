@@ -22,16 +22,29 @@ export default function Layout({ children }: { children: any }) {
   // );
 
   useEffect(() => {
-    if (!user) return;
+    // return;
+    if (!user || user?.setup === false || !user.createdAt) return setStatus("");
+
+    let isNotTimeStamp = user.createdAt instanceof Date;
 
     let days: any;
 
-    days = user.submittedFeedback
-      ? getDifferenceInDays(
-          new Date(),
-          user.submittedFeedback.lastSubmitted.toDate()
-        )
-      : getDifferenceInDays(new Date(), user.createdAt.toDate());
+    if (user.submittedFeedback) {
+      getDifferenceInDays(
+        new Date(),
+        user.submittedFeedback.lastSubmitted.toDate()
+      );
+    }
+
+    if (!user.submittedFeedback) {
+      if (isNotTimeStamp) {
+        days = getDifferenceInDays(new Date(), user?.createdAt);
+      } else {
+        days = getDifferenceInDays(new Date(), user?.createdAt?.toDate());
+      }
+    }
+
+    console.log(days);
 
     // days = 50;
 
